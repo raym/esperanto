@@ -22,7 +22,7 @@ var
     }
   },
 
-  dictionary = [
+  translations = [
     {
       eo: 'ne',
       en: 'no'
@@ -54,12 +54,12 @@ var
     return translation.eo;
   },
 
-  askNextFromDictionary = (index, dictionary, rl) => {
+  askNextFromTranslations = (index, translations, rl) => {
     nextIndex = index + 1;
-    if (nextIndex >= dictionary.length) {
+    if (nextIndex >= translations.length) {
       return null;
     } else {
-      askForTranslation(dictionary[nextIndex], rl);
+      askForTranslation(translations[nextIndex], rl);
       return nextIndex;
     }
   },
@@ -69,7 +69,7 @@ var
     process.exit(0);
   }
 
-  currentIndex = askNextFromDictionary(-1, dictionary, rl)
+  currentIndex = askNextFromTranslations(-1, translations, rl)
 
 ;
 
@@ -77,14 +77,14 @@ rl
   .on('line', (line) => {
     var
       guess = line.trim(),
-      answer = dictionary[currentIndex].eo
+      answer = translations[currentIndex].eo
     ;
     if (guess === answer) {
       console.log('Yep!\n');
     } else {
       console.log(`Nope, the correct answer is: ${answer}\n`);
     }
-    currentIndex = askNextFromDictionary(currentIndex, dictionary, rl);
+    currentIndex = askNextFromTranslations(currentIndex, translations, rl);
     if (currentIndex === null) {
       endProgram();
     }
