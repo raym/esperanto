@@ -1,0 +1,25 @@
+{
+  "name": "esperanto",
+  "version": "0.0.1",
+  "description": "Esperanto practice",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raym/esperanto.git"
+  },
+  "keywords": [
+    "esperanto"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/raym/esperanto/issues"
+  },
+  "homepage": "https://github.com/raym/esperanto#readme",
+  "dependencies": {
+    "underscore": "^1.8.3"
+  }
+}
