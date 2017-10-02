@@ -1,45 +1,12 @@
 var
 
-  roots = {
-    'vir': {
-      'o': 'man',
-      'ino': 'woman'
-    },
-    'knab': {
-      'o': 'boy',
-      'ino': 'girl'
-    },
-    'est': {
-      'i': 'to be',
-      'as': {
-        '1PS': 'am',
-        '1PP': 'are',
-        '2PS': 'are',
-        '2PP': 'are',
-        '3PS': 'is',
-        '3PP': 'are'
-      }
-    }
-  },
+  Records = require('./lib/records'),
+  TranslationTransformer = require('./lib/translation_transformer'),
 
-  translations = [
-    {
-      eo: 'ne',
-      en: 'no'
-    },
-    {
-      eo: 'la',
-      en: 'the'
-    },
-    {
-      eo: 'mi',
-      en: 'I'
-    },
-    {
-      eo: 'vi',
-      en: 'you'
-    }
-  ],
+  records = new Records();
+  record = null,
+  translations = null,
+  translation = null,
 
   readline = require('readline'),
 
@@ -48,46 +15,58 @@ var
     output: process.stdout
   }),
 
-  askForTranslation = (translation, rl) => {
+  askForTranslation = function(translation, rl) {
     console.log(translation.en);
     rl.prompt();
     return translation.eo;
   },
 
-  askNextFromTranslations = (index, translations, rl) => {
-    nextIndex = index + 1;
-    if (nextIndex >= translations.length) {
-      return null;
-    } else {
-      askForTranslation(translations[nextIndex], rl);
-      return nextIndex;
-    }
-  },
-
-  endProgram = () => {
+  endProgram = function() {
     console.log('All done!');
     process.exit(0);
   }
 
-  currentIndex = askNextFromTranslations(-1, translations, rl)
-
 ;
 
+if (records.hasMore()) {
+  record = records.next();
+  translations = new TranslationTransformer(record);
+  if (translations.hasMore()) {
+    translation = translations.next();
+  } else {
+    // TODO: figure out how to robustly retrieve the next translation
+  }
+} else {
+  endProgram();
+}
+
+askForTranslation(translation, rl);
+
 rl
-  .on('line', (line) => {
+  .on('line', function(line) {
+
     var
       guess = line.trim(),
-      answer = translations[currentIndex].eo
+      answer = translation.eo
     ;
+
     if (guess === answer) {
       console.log('Yep!\n');
     } else {
       console.log(`Nope, the correct answer is: ${answer}\n`);
     }
-    currentIndex = askNextFromTranslations(currentIndex, translations, rl);
-    if (currentIndex === null) {
-      endProgram();
+
+    if (!translations.hasMore()) {
+      if (!records.hasMore()) {
+        endProgram();
+      }
+      record = records.next();
+      translations = new TranslationTransformer(record);
     }
+
+    translation = translations.next();
+    askForTranslation(translation, rl);
+
   })
   .on('close', endProgram)
 ;
